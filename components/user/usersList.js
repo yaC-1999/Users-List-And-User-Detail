@@ -1,4 +1,4 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CircularProgress,
   Grid,
@@ -27,7 +27,6 @@ function UsersList() {
     axios
       .get("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
-        console.log(res.data);
         setUsers(res.data);
         setLoading(false);
       })
@@ -73,14 +72,11 @@ function UsersList() {
                   <TableRow
                     key={user.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    // onClick={() => showDetailsHandler(row.id)}
                   >
                     <Link
                       href={{
-                        pathname: "/user/" + encodeURIComponent(user.id),
-                        // slashes: { i: JSON.stringify(user) },
+                        pathname: "/user/" + user.id,
                       }}
-                      // href={"/user/" + encodeURIComponent(row.id)}
                       style={{ display: "contents" }}
                       target="_blank"
                     >

@@ -15,10 +15,14 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";
+import Link from "next/link";
+import ErrorPage from "next/error";
+import Image from "next/image";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
 
-function DetailPage(params) {
+function DetailPage({ data }) {
   const router = useRouter();
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(router.query.userId);
   const [user, setUser] = useState("");
   const [refresh, setRefresh] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -29,17 +33,12 @@ function DetailPage(params) {
 
   const getUser = () => {
     axios
-      .get("https://jsonplaceholder.typicode.com/users")
+      .get(`https://jsonplaceholder.typicode.com/users/${router.query.userId}`)
       .then((res) => {
-        const test = res.data.find(
-          (u) => u.id === parseInt(router.query.userId)
-        );
-        setUser(test);
-        console.log(user);
+        setUser(res.data);
         if (refresh < 2) {
           setRefresh(refresh + 1);
         }
-        setLoading(refresh == 2 ? false : true);
       })
       .catch((err) => {
         getUser();
@@ -48,41 +47,43 @@ function DetailPage(params) {
   };
 
   function formatPhoneNumber(phoneNumberString) {
-    return "+" + ("" + phoneNumberString).replace(/\D/g, "");
+    const formatedNumber = formatPhoneNumberIntl(
+      "+" + ("" + phoneNumberString.split("x")[0]).replace(/\D/g, "")
+    );
+    return formatedNumber;
   }
 
   function mailTo(mail) {
     window.location.href = `mailto:${mail}`;
   }
 
-  if (loading) {
-    return (
-      <Grid
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <CircularProgress color="inherit" />
-      </Grid>
-    );
+  if (!data) {
+    return <ErrorPage statusCode={404} />;
   } else {
     return (
       <Grid container>
         {user && (
           <Grid xs={12}>
-            <Card sx={{ boxShadow: "0", borderRadius: "0" }}>
+            <Image
+              src="https://wallpaperaccess.com/full/523868.gif"
+              alt="/"
+              style={{ maxHeight: "50vh" }}
+              fill
+              objectFit="cover"
+            />
+            {/* <Card sx={{ boxShadow: "0", borderRadius: "0" }}>
               <CardMedia
                 sx={{ minHeight: "50vh", borderRadius: "0" }}
                 image="https://wallpaperaccess.com/full/523868.gif"
-                title="green iguana"
+                title="wallpaper"
               />
-            </Card>
+            </Card> */}
             <Grid
               xs={12}
               display="flex"
               justifyContent="center"
               flexWrap="wrap"
+              mt={"50vh"}
             >
               <Grid xs={2}>
                 <Avatar
@@ -92,16 +93,16 @@ function DetailPage(params) {
                     height: 210,
                     boxShadow: "20",
                   }}
-                  alt={user?.name}
+                  alt={data.name}
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_vmeox-3VebUYpLxGJL6VGwPjw5_QUcb4NQ&usqp=CAU"
                 />
               </Grid>
               <Grid xs={7} p={2}>
                 <Typography variant="h4" fontWeight="bold">
-                  {user.name}
+                  {data.name}
                 </Typography>
                 <Typography variant="subtitle1">
-                  {user.company.catchPhrase + " at " + user.company.name + "."}
+                  {data.company.catchPhrase + " at " + data.company.name + "."}
                 </Typography>
                 <Grid
                   xs={10}
@@ -119,7 +120,7 @@ function DetailPage(params) {
                   >
                     <LocationOnIcon color="action" sx={{ fontSize: 16 }} />
                     <Typography variant="subtitle2" color="gray">
-                      {user.address.street + ", " + user.address.city}
+                      {data.address.street + ", " + data.address.city}
                     </Typography>
                   </Grid>
                   <Grid display="flex" flexWrap="wrap" alignItems="center">
@@ -148,9 +149,9 @@ function DetailPage(params) {
                 justifyContent="center"
                 flexWrap="wrap"
                 p={1}
-                pt={2}
+                pt={3}
                 pb={2}
-                sx={{ backgroundColor: "lightgray" }}
+                sx={{ backgroundColor: "gainsboro" }}
               >
                 <Grid
                   xs={9}
@@ -164,7 +165,8 @@ function DetailPage(params) {
                     sx={{ fontSize: 16, marginRight: "5px" }}
                   />
                   <Typography variant="subtitle2" color="gray">
-                    {formatPhoneNumber(user.phone)}
+                    {/* {phoneNumberFormatter('18008675309').format({type: 'international', separator: '.'})} */}
+                    {formatPhoneNumber(data.phone)}
                   </Typography>
                 </Grid>
                 <Grid xs={9} display="flex" flexWrap="wrap" alignItems="center">
@@ -173,7 +175,7 @@ function DetailPage(params) {
                     sx={{ fontSize: 16, marginRight: "5px" }}
                   />
                   <Typography variant="subtitle2" color="gray">
-                    <a href={`mailto:${user.email}`}>{user.email}</a>
+                    <Link href={`mailto:${data.email}`}>{data.email}</Link>
                   </Typography>
                 </Grid>
               </Grid>
@@ -184,4 +186,19 @@ function DetailPage(params) {
     );
   }
 }
+
+export async function getServerSideProps(context) {
+  try {
+    const id = await context.query.userId;
+
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+    const data = await res.data;
+    return { props: { data } };
+  } catch (res) {
+    return { props: {} };
+  }
+}
+
 export default DetailPage;
