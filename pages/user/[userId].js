@@ -152,12 +152,16 @@ function DetailPage({ data }) {
 }
 
 export async function getServerSideProps(context) {
-  const id = await context.query.userId;
-  const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/users/${id}`
-  );
-  const data = res.data;
-  return { props: { data: data || null } };
+  try {
+    const id = await context.query.userId;
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+    const data = res.data;
+    return { props: { data } };
+  } catch (error) {
+    return { props: {} };
+  }
 }
 
 export default DetailPage;
