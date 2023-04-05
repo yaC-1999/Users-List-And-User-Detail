@@ -36,6 +36,19 @@ function UsersList() {
       });
   };
 
+  function formatPhoneNumber(phoneNumberString) {
+    const formatedNumber =
+      "+" +
+      (
+        "" +
+        (phoneNumberString.search("x")
+          ? phoneNumberString.split("x")[0]
+          : phoneNumberString)
+      ).replace(/\D/g, "");
+
+    return formatedNumber;
+  }
+
   if (loading) {
     return (
       <Grid
@@ -82,7 +95,9 @@ function UsersList() {
                     >
                       <TableCell align="left">{user.name}</TableCell>
                       <TableCell align="left">{user.username}</TableCell>
-                      <TableCell align="left">{user.phone}</TableCell>
+                      <TableCell align="left">
+                        {formatPhoneNumber(user.phone)}
+                      </TableCell>
                     </Link>
                   </TableRow>
                 ))}
