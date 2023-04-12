@@ -74,10 +74,10 @@ function UsersList() {
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
-                <TableRow>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Username</TableCell>
-                  <TableCell align="left">Phone</TableCell>
+                <TableRow style={{ display: "table", width: "100%" }}>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Username</TableCell>
+                  <TableCell>Phone</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -93,11 +93,25 @@ function UsersList() {
                       style={{ display: "contents" }}
                       target="_blank"
                     >
-                      <TableCell align="left">{user.name}</TableCell>
-                      <TableCell align="left">{user.username}</TableCell>
-                      <TableCell align="left">
-                        {formatPhoneNumber(user.phone)}
-                      </TableCell>
+                      <a>
+                        <Grid
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <TableCell width="100%" align="left">
+                            {user.name}
+                          </TableCell>
+                          <TableCell width="100%" align="left">
+                            {user.username}
+                          </TableCell>
+                          <TableCell width="100%" align="left">
+                            {formatPhoneNumber(user.phone)}
+                          </TableCell>
+                        </Grid>
+                      </a>
                     </Link>
                   </TableRow>
                 ))}

@@ -1,4 +1,4 @@
-import { Avatar, Grid, Typography } from "@mui/material";
+import { Avatar, Card, CardMedia, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -30,26 +30,26 @@ function DetailPage({ data }) {
     return (
       <Grid container>
         <Grid xs={12}>
-          <Image
+          {/* <Image
             src="https://wallpaperaccess.com/full/523868.gif"
             alt="/"
             style={{ maxHeight: "50vh" }}
-            fill
+            layout='fill'
             objectFit="cover"
-          />
-          {/* <Card sx={{ boxShadow: "0", borderRadius: "0" }}>
+          /> */}
+          <Card sx={{ boxShadow: "0", borderRadius: "0" }}>
               <CardMedia
                 sx={{ minHeight: "50vh", borderRadius: "0" }}
                 image="https://wallpaperaccess.com/full/523868.gif"
                 title="wallpaper"
               />
-            </Card> */}
+            </Card>
           <Grid
             xs={12}
             display="flex"
             justifyContent="center"
             flexWrap="wrap"
-            mt={"50vh"}
+            // mt={"50vh"}
           >
             <Grid xs={2}>
               <Avatar
@@ -140,7 +140,9 @@ function DetailPage({ data }) {
                   sx={{ fontSize: 16, marginRight: "5px" }}
                 />
                 <Typography variant="subtitle2" color="gray">
-                  <Link href={`mailto:${data.email}`}>{data.email}</Link>
+                  <Link href={`mailto:${data.email}`}>
+                    <a>{data.email}</a>
+                    </Link>
                 </Typography>
               </Grid>
             </Grid>
